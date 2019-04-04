@@ -1,0 +1,62 @@
+//1. 接口
+
+public interface Hello {
+
+    void sayHello();
+
+}
+
+
+
+
+//2.实现类
+
+public class HelloWorld implements Hello{
+
+    @Override
+    public void sayHello() {
+        System.out.println("HelloWorld  ---->  sayHello()执行");
+    }
+}
+
+
+
+//3.代理
+public class HelloProxy implements InvocationHandler {
+
+    private Hello hello;
+
+    public HelloProxy(Hello hello){
+
+        this.hello = hello;
+
+    }
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+
+        return method.invoke(hello,args);
+
+    }
+
+    public Object getProxyInstance(){
+        return Proxy.newProxyInstance(hello.getClass().getClassLoader(),hello.getClass().getInterfaces(),this);
+    }
+}
+
+
+
+//4.测试
+public class ProxyTest {
+
+    public static void main(String[] args){
+
+        Hello hello = new HelloWorld();
+
+        HelloProxy helloProxy = new HelloProxy(hello);
+
+        Hello proxy = (Hello) helloProxy.getProxyInstance();
+
+        proxy.sayHello();
+    }
+}
+
